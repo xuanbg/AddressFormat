@@ -26,6 +26,7 @@ namespace Insight.WS.Log
             CreateHost();
             Host.Open();
             DataAccess.ReadRule();
+            Util.InitVersion();
         }
 
         protected override void OnStop()
@@ -60,7 +61,7 @@ namespace Insight.WS.Log
 
             var address = new Uri(Util.GetAppSetting("Address"));
             Host = new ServiceHost(typeof(LogManage), address);
-            var endpoint = Host.AddServiceEndpoint(typeof(Interface), binding, "LogServer");
+            var endpoint = Host.AddServiceEndpoint(typeof(Interface), binding, "");
             endpoint.Behaviors.Add(new WebHttpBehavior());
         }
 

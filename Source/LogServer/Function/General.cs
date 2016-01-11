@@ -136,12 +136,9 @@ namespace Insight.WS.Log
         {
             var request = (HttpWebRequest)WebRequest.Create(url);
             request.Method = method;
+            request.Accept = $"application/x-gzip/json; version={Util.Version}";
             request.ContentType = "application/json";
-            if (author != null)
-            {
-                request.Headers.Add(HttpRequestHeader.Authorization, author);
-            }
-
+            request.Headers.Add(HttpRequestHeader.Authorization, author);
             return request;
         }
 
@@ -185,10 +182,13 @@ namespace Insight.WS.Log
         /// <returns></returns>
         private static bool CompareVersion(WebHeaderCollection headers)
         {
-            var accept = headers[HttpRequestHeader.Accept].Split(Convert.ToChar(";"));
+            var accept = headers[HttpRequestHeader.Accept];
+            if (accept == null) return false;
+
+            var val = accept.Split(Convert.ToChar(";"));
             if (accept.Length < 2) return false;
 
-            var ver = Convert.ToInt32(accept[1].Substring(9));
+            var ver = Convert.ToInt32(val[1].Substring(9));
             return ver >= Convert.ToInt32(CompatibleVersion) && ver <= Convert.ToInt32(UpdateVersion);
         }
 

@@ -8,6 +8,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Web.Script.Serialization;
+using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
 using Insight.WS.Log.Entity;
@@ -49,6 +50,11 @@ namespace Insight.WS.Log
         /// </summary>
         public static readonly string UpdateVersion = GetAppSetting("UpdateVersion");
 
+        /// <summary>
+        /// 程序集当前版本
+        /// </summary>
+        public static int Version;
+
         #endregion
 
         #region 常用静态方法
@@ -86,6 +92,16 @@ namespace Insight.WS.Log
             var json = Serialize(obj);
             var buff = Encoding.UTF8.GetBytes(json);
             return Convert.ToBase64String(buff);
+        }
+
+        /// <summary>
+        /// 读取版本信息
+        /// </summary>
+        public static void InitVersion()
+        {
+            var version = new Version(Application.ProductVersion);
+            var build = $"{version.Major}{version.Minor}{version.Build.ToString("D4").Substring(0, 2)}";
+            Version = Convert.ToInt32(build);
         }
 
         #endregion
