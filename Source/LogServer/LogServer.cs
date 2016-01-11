@@ -3,6 +3,7 @@ using System.ServiceModel;
 using System.ServiceModel.Channels;
 using System.ServiceModel.Description;
 using System.ServiceProcess;
+using Insight.WS.Log.Entity;
 using Microsoft.Samples.GZipEncoder;
 
 namespace Insight.WS.Log
