@@ -1,2 +1,7 @@
-# Google App Engine generated folder
-appengine-generated/
+*.suo
+Debug
+Release
+bin
+obj
+packages
+*.user
