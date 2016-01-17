@@ -25,7 +25,7 @@ namespace Insight.WS.Log
             var result = Verify(code + Secret);
             if (!result.Successful) return result;
 
-            if (string.IsNullOrEmpty(code)) return result.InvalidEventCode();
+            if (string.IsNullOrEmpty(code) || code.Length != 6) return result.InvalidEventCode();
 
             var level = Convert.ToInt32(code.Substring(0, 1));
             var rule = Rules.SingleOrDefault(r => r.Code == code);
@@ -67,6 +67,11 @@ namespace Insight.WS.Log
             Session us;
             var result = Authorization("60A97A33-0E6E-4856-BB2B-322FEEEFD96A", out us);
             if (!result.Successful) return result;
+
+            if (string.IsNullOrEmpty(rule.Code) || rule.Code.Length != 6) return result.InvalidEventCode();
+
+            var level = Convert.ToInt32(rule.Code.Substring(0, 1));
+            if (level <= 1 || level == 7) return result.EventWithoutConfig();
 
             if (Rules.Any(r => r.Code == rule.Code)) return result.EventCodeUsed();
 

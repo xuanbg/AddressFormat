@@ -123,6 +123,19 @@
         }
 
         /// <summary>
+        /// 返回事件规则无需配置（415）的错误信息
+        /// </summary>
+        /// <returns>JsonResult</returns>
+        public JsonResult EventWithoutConfig()
+        {
+            Successful = false;
+            Code = "415";
+            Name = "EventWithoutConfig";
+            Message = "事件等级为：0/1/7的，无需配置事件规则";
+            return this;
+        }
+
+        /// <summary>
         /// 返回数据库操作失败（501）的错误信息
         /// </summary>
         /// <returns>JsonResult</returns>
