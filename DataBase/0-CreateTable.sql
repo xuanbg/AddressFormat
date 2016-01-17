@@ -42,4 +42,5 @@ CREATE TABLE SYS_Logs(
 )
 GO
 
+insert SYS_Logs_Rules (Code, Level, Source, Action, CreatorUserId) select '300601', 3, '日志服务', '接口验证', '00000000-0000-0000-0000-000000000000'
 

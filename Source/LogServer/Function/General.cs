@@ -117,7 +117,7 @@ namespace Insight.WS.Log
         }
 
         /// <summary>
-        /// 构造SYS_Logs数据
+        /// 构造SYS_Logs数据并写入
         /// </summary>
         /// <param name="code">事件代码</param>
         /// <param name="message">事件消息。可为空</param>
@@ -206,7 +206,6 @@ namespace Insight.WS.Log
                     responseStream.Close();
                     return Deserialize<JsonResult>(result);
                 }
-
             }
             catch (Exception ex)
             {
