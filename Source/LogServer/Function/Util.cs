@@ -57,7 +57,7 @@ namespace Insight.WS.Log
 
         #endregion
 
-        #region 常用静态方法
+        #region 常用方法
 
         /// <summary>
         /// 读取配置项的值

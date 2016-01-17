@@ -110,6 +110,19 @@
         }
 
         /// <summary>
+        /// 返回事件代码已使用（414）的错误信息
+        /// </summary>
+        /// <returns>JsonResult</returns>
+        public JsonResult EventCodeUsed()
+        {
+            Successful = false;
+            Code = "414";
+            Name = "EventCodeUsed";
+            Message = "事件代码已使用，请勿重复为该代码配置日志规则";
+            return this;
+        }
+
+        /// <summary>
         /// 返回数据库操作失败（501）的错误信息
         /// </summary>
         /// <returns>JsonResult</returns>

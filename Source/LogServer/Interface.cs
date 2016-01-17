@@ -7,17 +7,18 @@ namespace Insight.WS.Log
     [ServiceContract]
     interface Interface
     {
-
         /// <summary>
         /// 写入日志
         /// </summary>
         /// <param name="code">事件代码（必须有）</param>
         /// <param name="message">事件消息，为空则使用默认消息文本</param>
+        /// <param name="source">来源（可为空）</param>
+        /// <param name="action">操作（可为空）</param>
         /// <param name="userid">事件源用户ID（可为空）</param>
         /// <returns>JsonResult</returns>
         [WebInvoke(Method = "POST", UriTemplate = "logs", ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.WrappedRequest)]
         [OperationContract]
-        JsonResult WriteToLog(string code, string message, string userid);
+        JsonResult WriteToLog(string code, string message, string source, string action, string userid);
 
         /// <summary>
         /// 新增日志规则
