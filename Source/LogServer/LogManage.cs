@@ -25,36 +25,13 @@ namespace Insight.WS.Log
             var result = Verify(code + Secret);
             if (!result.Successful) return result;
 
-            if (string.IsNullOrEmpty(code) || code.Length != 6) return result.InvalidEventCode();
-
-            var level = Convert.ToInt32(code.Substring(0, 1));
-            var rule = Rules.SingleOrDefault(r => r.Code == code);
-            if (level > 1 && level < 7 && rule == null) return result.InvalidEventCode();
-
             var gp = new UserIdParse(userid);
             if (!gp.Successful) return result.InvalidGuid();
 
-            var log = new SYS_Logs
-            {
-                ID = Guid.NewGuid(),
-                Code = code,
-                Level = level,
-                Source = string.IsNullOrEmpty(message) ? rule?.Source : source,
-                Action = string.IsNullOrEmpty(message) ? rule?.Action : action,
-                Message = string.IsNullOrEmpty(message) ? rule?.Message : message,
-                SourceUserId = gp.UserId,
-                CreateTime = DateTime.Now
-            };
+            var succe = WriteLog(code, message, source, action, gp.UserId);
+            if (!succe.HasValue) return result.InvalidEventCode();
 
-            if (rule?.ToDataBase ?? false)
-            {
-                DataAccess.WriteToDB(log);
-            }
-            else
-            {
-                DataAccess.WriteToFile(log);
-            }
-            return result;
+            return succe.Value ? result : result.DataBaseError();
         }
 
         /// <summary>

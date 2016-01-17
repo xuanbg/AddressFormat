@@ -82,12 +82,13 @@ namespace Insight.WS.Log
         /// 将日志写入数据库
         /// </summary>
         /// <param name="log"></param>
-        public static void WriteToDB(SYS_Logs log)
+        /// <returns>bool 是否写入成功</returns>
+        public static bool WriteToDB(SYS_Logs log)
         {
             using (var context = new LogEntities())
             {
                 context.SYS_Logs.Add(log);
-                context.SaveChanges();
+                return context.SaveChanges() > 0;
             }
         }
 
@@ -95,7 +96,8 @@ namespace Insight.WS.Log
         /// 将日志写入文件
         /// </summary>
         /// <param name="log"></param>
-        public static void WriteToFile(SYS_Logs log)
+        /// <returns>bool 是否写入成功</returns>
+        public static bool WriteToFile(SYS_Logs log)
         {
             Mutex.WaitOne();
             var path = $"{GetAppSetting("LogLocal")}\\{GetLevelName(log.Level)}\\";
@@ -108,11 +110,20 @@ namespace Insight.WS.Log
             var time = log.CreateTime.ToString("O");
             var text = $"[{log.CreateTime.Kind} {time}] [{log.Code}] [{log.Source}] [{log.Action}] Message:{log.Message}\r\n";
             var buffer = Encoding.UTF8.GetBytes(text);
-            using (var stream = new FileStream(path, FileMode.Append))
+            try
             {
-                stream.Write(buffer, 0, buffer.Length);
+                using (var stream = new FileStream(path, FileMode.Append))
+                {
+                    stream.Write(buffer, 0, buffer.Length);
+                }
+                Mutex.ReleaseMutex();
+                return true;
             }
-            Mutex.ReleaseMutex();
+            catch (Exception)
+            {
+                Mutex.ReleaseMutex();
+                return false;
+            }
         }
 
         /// <summary>

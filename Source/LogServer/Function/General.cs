@@ -1,8 +1,10 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.ServiceModel.Web;
 using System.Text;
+using System.Text.RegularExpressions;
 using Insight.WS.Log.Entity;
 using static Insight.WS.Log.Util;
 
@@ -50,7 +52,7 @@ namespace Insight.WS.Log
         /// 带鉴权的会话合法性验证
         /// </summary>
         /// <param name="aid">操作ID</param>
-        /// <param name="session"></param>
+        /// <param name="session">从Http请求中获取的Session</param>
         /// <returns>JsonResult</returns>
         public static JsonResult Authorization(string aid, out Session session)
         {
@@ -109,18 +111,40 @@ namespace Insight.WS.Log
             }
             catch (Exception ex)
             {
-                var log = new SYS_Logs
-                {
-                    Code = "300001",
-                    Level = 3,
-                    Source = "日志服务",
-                    Action = "身份验证",
-                    Message = ex.ToString(),
-                    CreateTime = DateTime.Now
-                };
-                DataAccess.WriteToFile(log);
+                WriteLog("300601", $"提取验证信息失败。\r\nException:{ex}");
                 return default(T);
             }
+        }
+
+        /// <summary>
+        /// 构造SYS_Logs数据
+        /// </summary>
+        /// <param name="code">事件代码</param>
+        /// <param name="message">事件消息。可为空</param>
+        /// <param name="source">事件源。可为空，默认为空</param>
+        /// <param name="action">操作。可为空，默认为空</param>
+        /// <param name="id">用户ID。可为空，默认为空</param>
+        /// <returns>bool 是否写入成功</returns>
+        public static bool? WriteLog(string code, string message = null, string source = null, string action = null, Guid? id = null)
+        {
+            if (string.IsNullOrEmpty(code) || !Regex.IsMatch(code, @"/d{6}")) return null;
+
+            var level = Convert.ToInt32(code.Substring(0, 1));
+            var rule = Rules.SingleOrDefault(r => r.Code == code);
+            if (level > 1 && level < 7 && rule == null) return null;
+
+            var log = new SYS_Logs
+            {
+                ID = Guid.NewGuid(),
+                Code = code,
+                Level = level,
+                Source = rule?.Source ?? source,
+                Action = rule?.Action ?? action,
+                Message = string.IsNullOrEmpty(message) ? rule?.Message : message,
+                SourceUserId = id,
+                CreateTime = DateTime.Now
+            };
+            return (rule?.ToDataBase ?? false) ? DataAccess.WriteToDB(log) : DataAccess.WriteToFile(log);
         }
 
         /// <summary>
