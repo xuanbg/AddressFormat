@@ -56,5 +56,13 @@ namespace Insight.WS.Log
         [OperationContract]
         JsonResult GetRule(string id);
 
+        /// <summary>
+        /// 获取全部日志规则
+        /// </summary>
+        /// <returns>JsonResult</returns>
+        [WebGet(UriTemplate = "rules/allrule", ResponseFormat = WebMessageFormat.Json)]
+        [OperationContract]
+        JsonResult GetRules();
+
     }
 }

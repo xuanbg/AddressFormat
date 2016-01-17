@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.ServiceModel;
+using System.Text.RegularExpressions;
 using Insight.WS.Log.Entity;
 using static Insight.WS.Log.General;
 using static Insight.WS.Log.Util;
@@ -45,7 +46,7 @@ namespace Insight.WS.Log
             var result = Authorization("60A97A33-0E6E-4856-BB2B-322FEEEFD96A", out us);
             if (!result.Successful) return result;
 
-            if (string.IsNullOrEmpty(rule.Code) || rule.Code.Length != 6) return result.InvalidEventCode();
+            if (string.IsNullOrEmpty(rule.Code) || !Regex.IsMatch(rule.Code, @"^\d{6}$")) return result.InvalidEventCode();
 
             var level = Convert.ToInt32(rule.Code.Substring(0, 1));
             if (level <= 1 || level == 7) return result.EventWithoutConfig();
@@ -53,7 +54,15 @@ namespace Insight.WS.Log
             if (Rules.Any(r => r.Code == rule.Code)) return result.EventCodeUsed();
 
             rule.CreatorUserId = us.UserId;
-            return DataAccess.AddRule(rule) ? result : result.DataBaseError();
+            if (!DataAccess.AddRule(rule)) return result.DataBaseError();
+
+            var log = new
+            {
+                UserID = us.UserId,
+                Message = $"事件代码【{rule.Code}】已由{us.UserName}创建和配置为：{Serialize(rule)}"
+            };
+            WriteLog("600601", Serialize(log));
+            return result;
         }
 
         /// <summary>
@@ -63,13 +72,22 @@ namespace Insight.WS.Log
         /// <returns>JsonResult</returns>
         public JsonResult RemoveRule(string id)
         {
-            var result = Authorization("BBC43098-A030-46CA-A681-0C3D1ECC15AB");
+            Session us;
+            var result = Authorization("BBC43098-A030-46CA-A681-0C3D1ECC15AB", out us);
             if (!result.Successful) return result;
 
             Guid rid;
             if (!Guid.TryParse(id, out rid)) return result.InvalidGuid();
 
-            return DataAccess.DeleteRule(rid) ? result : result.DataBaseError();
+            if (!DataAccess.DeleteRule(rid)) return result.DataBaseError();
+
+            var log = new
+            {
+                UserID = us.UserId,
+                Message = $"事件配置【{id}】已被{us.UserName}删除"
+            };
+            WriteLog("600602", Serialize(log));
+            return result;
         }
 
         /// <summary>
@@ -79,10 +97,19 @@ namespace Insight.WS.Log
         /// <returns>JsonResult</returns>
         public JsonResult EditRule(SYS_Logs_Rules rule)
         {
-            var result = Authorization("9FF1547D-2E3F-4552-963F-5EA790D586EA");
+            Session us;
+            var result = Authorization("9FF1547D-2E3F-4552-963F-5EA790D586EA", out us);
             if (!result.Successful) return result;
 
-            return DataAccess.EditRule(rule) ? result : result.DataBaseError();
+            if (!DataAccess.EditRule(rule)) return result.DataBaseError();
+
+            var log = new
+            {
+                UserID = us.UserId,
+                Message = $"事件代码【{rule.Code}】已被{us.UserName}修改为：{Serialize(rule)}"
+            };
+            WriteLog("600603", Serialize(log));
+            return result;
         }
 
         /// <summary>
@@ -102,5 +129,16 @@ namespace Insight.WS.Log
             return rule == null ? result.NotFound() : result.Success(Serialize(rule));
         }
 
+        /// <summary>
+        /// 获取全部日志规则
+        /// </summary>
+        /// <returns>JsonResult</returns>
+        public JsonResult GetRules()
+        {
+            var result = Authorization("E3CFC5AA-CD7D-4A3C-8900-8132ADB7099F");
+            if (!result.Successful) return result;
+
+            return Rules.Count == 0 ? result.NoContent() : result.Success(Serialize(Rules));
+        }
     }
 }

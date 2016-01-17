@@ -57,7 +57,7 @@ namespace Insight.WS.Log
         public static JsonResult Authorization(string aid, out Session session)
         {
             session = null;
-            var url = Address + "verify/auth?action={aid}";
+            var url = Address + $"verify/auth?action={aid}";
             var auth = GetAuthorization();
             var result = HttpRequest(url, "GET", auth);
             if (!result.Successful) return result;
@@ -111,7 +111,7 @@ namespace Insight.WS.Log
             }
             catch (Exception ex)
             {
-                WriteLog("300601", $"提取验证信息失败。\r\nException:{ex}");
+                WriteLog("500601", $"提取验证信息失败。\r\nException:{ex}");
                 return default(T);
             }
         }
@@ -127,7 +127,7 @@ namespace Insight.WS.Log
         /// <returns>bool 是否写入成功</returns>
         public static bool? WriteLog(string code, string message = null, string source = null, string action = null, Guid? id = null)
         {
-            if (string.IsNullOrEmpty(code) || !Regex.IsMatch(code, @"/d{6}")) return null;
+            if (string.IsNullOrEmpty(code) || !Regex.IsMatch(code, @"^\d{6}$")) return null;
 
             var level = Convert.ToInt32(code.Substring(0, 1));
             var rule = Rules.SingleOrDefault(r => r.Code == code);
@@ -209,13 +209,8 @@ namespace Insight.WS.Log
             }
             catch (Exception ex)
             {
-                var result = new JsonResult
-                {
-                    Code = "400",
-                    Name = "BadRequest",
-                    Message = ex.ToString()
-                };
-                return result;
+                WriteLog("100601", $"Http请求未得到正确的响应。\r\nException:{ex}", "日志服务", "接口验证");
+                return new JsonResult().BadRequest();
             }
         }
 

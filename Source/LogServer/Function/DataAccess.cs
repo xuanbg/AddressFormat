@@ -29,8 +29,11 @@ namespace Insight.WS.Log
             using (var context = new LogEntities())
             {
                 context.SYS_Logs_Rules.Add(rule);
-                if (context.SaveChanges() <= 0) return false;
-
+                if (context.SaveChanges() <= 0)
+                {
+                    General.WriteLog("300601");
+                    return false;
+                }
                 Rules.Add(rule);
                 return true;
             }
@@ -47,7 +50,11 @@ namespace Insight.WS.Log
                 if (rule == null) return false;
 
                 context.SYS_Logs_Rules.Remove(rule);
-                if (context.SaveChanges() <= 0) return false;
+                if (context.SaveChanges() <= 0)
+                {
+                    General.WriteLog("300602");
+                    return false;
+                }
 
                 Rules.RemoveAll(r => r.ID == id);
                 return true;
@@ -70,7 +77,11 @@ namespace Insight.WS.Log
                 data.Source = rule.Source;
                 data.Action = rule.Action;
                 data.Message = rule.Message;
-                if (context.SaveChanges() <= 0) return false;
+                if (context.SaveChanges() <= 0)
+                {
+                    General.WriteLog("300603");
+                    return false;
+                }
             }
 
             Rules.RemoveAll(r => r.ID == rule.ID);

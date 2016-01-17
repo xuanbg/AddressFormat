@@ -58,6 +58,33 @@
         }
 
         /// <summary>
+        /// 返回无可用内容（204）的成功信息
+        /// </summary>
+        /// <returns>JsonResult</returns>
+        public JsonResult NoContent()
+        {
+            Successful = true;
+            Code = "204";
+            Name = "NoContent";
+            Message = "无可用内容";
+            Data = "";
+            return this;
+        }
+
+        /// <summary>
+        /// 返回请求参数错误（400）的错误信息
+        /// </summary>
+        /// <returns>JsonResult</returns>
+        public JsonResult BadRequest()
+        {
+            Successful = false;
+            Code = "400";
+            Name = "BadRequest";
+            Message = "请求参数错误";
+            return this;
+        }
+
+        /// <summary>
         /// 返回身份验证失败（401）的错误信息
         /// </summary>
         /// <returns>JsonResult</returns>
@@ -105,7 +132,7 @@
             Successful = false;
             Code = "413";
             Name = "InvalidEventCode";
-            Message = "未配置的事件代码，请先为该代码配置日志规则";
+            Message = "错误的事件代码";
             return this;
         }
 
@@ -132,6 +159,19 @@
             Code = "415";
             Name = "EventWithoutConfig";
             Message = "事件等级为：0/1/7的，无需配置事件规则";
+            return this;
+        }
+
+        /// <summary>
+        /// 返回事件代码未配置（416）的错误信息
+        /// </summary>
+        /// <returns>JsonResult</returns>
+        public JsonResult EventCodeNotConfig()
+        {
+            Successful = false;
+            Code = "416";
+            Name = "EventCodeNotConfig";
+            Message = "未配置的事件代码，请先为该代码配置日志规则";
             return this;
         }
 
