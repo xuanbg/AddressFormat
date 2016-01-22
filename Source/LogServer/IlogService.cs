@@ -5,7 +5,7 @@ using Insight.WS.Log.Entity;
 namespace Insight.WS.Log
 {
     [ServiceContract]
-    interface Interface
+    interface IlogService
     {
         /// <summary>
         /// 写入日志

@@ -9,7 +9,7 @@ using static Insight.WS.Log.Util;
 namespace Insight.WS.Log
 {
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall)]
-    public class LogManage : Interface
+    public class LogService : IlogService
     {
 
         /// <summary>

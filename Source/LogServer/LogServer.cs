@@ -1,10 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ServiceModel;
-using System.ServiceModel.Channels;
-using System.ServiceModel.Description;
 using System.ServiceProcess;
-using Insight.WS.Log.Entity;
-using Microsoft.Samples.GZipEncoder;
+using System.Windows.Forms;
+using Insight.WS.Base;
 
 namespace Insight.WS.Log
 {
@@ -19,14 +18,24 @@ namespace Insight.WS.Log
         public LogServer()
         {
             InitializeComponent();
+            InitVersion();
+            DataAccess.ReadRule();
         }
 
         protected override void OnStart(string[] args)
         {
-            CreateHost();
+            var path = $"{Application.StartupPath}\\LogServer.exe";
+            var endpoints = new List<EndpointSet> { new EndpointSet { Name = "IlogService" } };
+            var serv = new Services
+            {
+                BaseAddress = Util.GetAppSetting("Address"),
+                Port = Util.GetAppSetting("Port"),
+                NameSpace = "Insight.WS.Log",
+                ServiceType = "LogService",
+                Endpoints = endpoints
+            };
+            Host = serv.CreateHost(path);
             Host.Open();
-            DataAccess.ReadRule();
-            Util.InitVersion();
         }
 
         protected override void OnStop()
@@ -36,33 +45,13 @@ namespace Insight.WS.Log
         }
 
         /// <summary>
-        /// 创建服务主机
+        /// 读取版本信息
         /// </summary>
-        private static void CreateHost()
+        public static void InitVersion()
         {
-            var transport = new HttpTransportBindingElement
-            {
-                ManualAddressing = true,
-                MaxReceivedMessageSize = 1073741824,
-                TransferMode = TransferMode.Streamed
-            };
-            var encoder = new WebMessageEncodingBindingElement
-            {
-                ReaderQuotas = { MaxArrayLength = 67108864, MaxStringContentLength = 67108864 },
-                ContentTypeMapper = new TypeMapper()
-            };
-            var gZipEncode = new GZipMessageEncodingBindingElement(encoder);
-            var binding = new CustomBinding
-            {
-                SendTimeout = TimeSpan.FromSeconds(600),
-                ReceiveTimeout = TimeSpan.FromSeconds(600),
-                Elements = { gZipEncode, transport }
-            };
-
-            var address = new Uri(Util.GetAppSetting("Address"));
-            Host = new ServiceHost(typeof(LogManage), address);
-            var endpoint = Host.AddServiceEndpoint(typeof(Interface), binding, "");
-            endpoint.Behaviors.Add(new WebHttpBehavior());
+            var version = new Version(Application.ProductVersion);
+            var build = $"{version.Major}{version.Minor}{version.Build.ToString("D4").Substring(0, 2)}";
+            Util.Version = Convert.ToInt32(build);
         }
 
     }

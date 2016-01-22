@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -20,9 +21,9 @@ namespace Insight.WS.Log
         public static JsonResult Verify(string rule)
         {
             var result = new JsonResult();
-            var auth = GetAuthorization();
-            var obj = GetAuthor<string>(auth);
-            return obj != Hash(rule) ? result.InvalidAuth() : result.Success();
+            var dict = GetAuthorization();
+            var key = GetAuthor<string>(dict["Auth"]);
+            return key != Hash(rule) ? result.InvalidAuth() : result.Success();
         }
 
         /// <summary>
@@ -32,8 +33,8 @@ namespace Insight.WS.Log
         public static JsonResult Verify()
         {
             var url = Address + "verify";
-            var auth = GetAuthorization();
-            return HttpRequest(url, "GET", auth);
+            var dict = GetAuthorization();
+            return HttpRequest(url, "GET", dict["Auth"]);
         }
 
         /// <summary>
@@ -44,8 +45,8 @@ namespace Insight.WS.Log
         public static JsonResult Authorization(string aid)
         {
             var url = Address + "verify/auth?action={aid}";
-            var auth = GetAuthorization();
-            return HttpRequest(url, "GET", auth);
+            var dict = GetAuthorization();
+            return HttpRequest(url, "GET", dict["Auth"]);
         }
 
         /// <summary>
@@ -58,7 +59,8 @@ namespace Insight.WS.Log
         {
             session = null;
             var url = Address + $"verify/auth?action={aid}";
-            var auth = GetAuthorization();
+            var dict = GetAuthorization();
+            var auth = dict["Auth"];
             var result = HttpRequest(url, "GET", auth);
             if (!result.Successful) return result;
 
@@ -70,29 +72,42 @@ namespace Insight.WS.Log
         /// 获取Http请求头部承载的验证信息
         /// </summary>
         /// <returns>string Http请求头部承载的验证字符串</returns>
-        public static string GetAuthorization()
+        public static Dictionary<string, string> GetAuthorization()
         {
             var context = WebOperationContext.Current;
             if (context == null) return null;
 
             var headers = context.IncomingRequest.Headers;
+            var response = context.OutgoingResponse;
             if (!CompareVersion(headers))
             {
-                context.OutgoingResponse.StatusCode = HttpStatusCode.NotAcceptable;
+                response.StatusCode = HttpStatusCode.NotAcceptable;
                 return null;
             }
 
             var auth = headers[HttpRequestHeader.Authorization];
             if (string.IsNullOrEmpty(auth))
             {
-                context.OutgoingResponse.StatusCode = HttpStatusCode.Unauthorized;
+                response.StatusCode = HttpStatusCode.Unauthorized;
                 return null;
             }
 
-            var response = context.OutgoingResponse;
+            var accept = headers[HttpRequestHeader.Accept];
+            var val = accept.Split(Convert.ToChar(";"));
+            var dict = new Dictionary<string, string>
+            {
+                {"Auth", auth},
+                {"Version", val[1].Substring(9)},
+                {"Client", val[2].Substring(8)}
+            };
+
+            var type = headers[HttpRequestHeader.ContentType];
+            if (type != "application/x-gzip") return dict;
+
             response.Headers[HttpResponseHeader.ContentEncoding] = "gzip";
             response.ContentType = "application/x-gzip";
-            return auth;
+
+            return dict;
         }
 
         /// <summary>
@@ -225,7 +240,7 @@ namespace Insight.WS.Log
             if (accept == null) return false;
 
             var val = accept.Split(Convert.ToChar(";"));
-            if (accept.Length < 2) return false;
+            if (accept.Length < 3) return false;
 
             var ver = Convert.ToInt32(val[1].Substring(9));
             return ver >= Convert.ToInt32(CompatibleVersion) && ver <= Convert.ToInt32(UpdateVersion);

@@ -34,14 +34,20 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="EntityFramework">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net40\EntityFramework.dll</HintPath>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EntityFramework.dll</HintPath>
     </Reference>
-    <Reference Include="EntityFramework.SqlServer">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net40\EntityFramework.SqlServer.dll</HintPath>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
-    <Reference Include="GZipEncoder">
+    <Reference Include="GZipEncoder, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\GZipEncoder.dll</HintPath>
+    </Reference>
+    <Reference Include="Service">
+      <HintPath>..\packages\Service.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -86,12 +92,11 @@
     <Compile Include="Entity\SYS_Logs_Rules.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entity\TypeMapper.cs" />
     <Compile Include="Function\DataAccess.cs" />
     <Compile Include="Entity\JsonResult.cs" />
     <Compile Include="Function\General.cs" />
-    <Compile Include="Interface.cs" />
-    <Compile Include="LogManage.cs" />
+    <Compile Include="IlogService.cs" />
+    <Compile Include="LogService.cs" />
     <Compile Include="Entity\UserIdParse.cs" />
     <Compile Include="Function\Util.cs" />
     <Compile Include="LogServer.cs">

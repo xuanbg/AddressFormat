@@ -9,8 +9,6 @@ using System.Text;
 using System.Threading;
 using System.Web.Script.Serialization;
 using System.Windows.Forms;
-using System.Xml;
-using System.Xml.Serialization;
 using Insight.WS.Log.Entity;
 
 namespace Insight.WS.Log
@@ -94,16 +92,6 @@ namespace Insight.WS.Log
             return Convert.ToBase64String(buff);
         }
 
-        /// <summary>
-        /// 读取版本信息
-        /// </summary>
-        public static void InitVersion()
-        {
-            var version = new Version(Application.ProductVersion);
-            var build = $"{version.Major}{version.Minor}{version.Build.ToString("D4").Substring(0, 2)}";
-            Version = Convert.ToInt32(build);
-        }
-
         #endregion
 
         #region Serialize/Deserialize
@@ -128,68 +116,6 @@ namespace Insight.WS.Log
         public static T Deserialize<T>(string json)
         {
             return new JavaScriptSerializer().Deserialize<T>(json);
-        }
-
-        /// <summary>
-        /// 将一个对象序列化为XML字符串
-        /// </summary>
-        /// <param name="obj">要序列化的对象</param>
-        /// <param name="encoding">编码方式</param>
-        /// <returns>序列化产生的XML字符串</returns>
-        public static string Serialize(object obj, Encoding encoding)
-        {
-            using (var stream = new MemoryStream())
-            {
-                SerializeInternal(stream, obj, encoding);
-
-                stream.Position = 0;
-                using (var reader = new StreamReader(stream, encoding))
-                {
-                    return reader.ReadToEnd();
-                }
-            }
-        }
-
-        /// <summary>
-        /// 从XML字符串中反序列化对象
-        /// </summary>
-        /// <typeparam name="T">结果对象类型</typeparam>
-        /// <param name="xml">包含对象的XML字符串</param>
-        /// <param name="encoding">编码方式</param>
-        /// <returns>反序列化得到的对象</returns>
-        public static T Deserialize<T>(string xml, Encoding encoding)
-        {
-            using (var ms = new MemoryStream(encoding.GetBytes(xml)))
-            {
-                using (var sr = new StreamReader(ms, encoding))
-                {
-                    var mySerializer = new XmlSerializer(typeof(T));
-                    return (T)mySerializer.Deserialize(sr);
-                }
-            }
-        }
-
-        /// <summary>
-        /// 序列化预处理
-        /// </summary>
-        /// <param name="stream"></param>
-        /// <param name="obj"></param>
-        /// <param name="encoding"></param>
-        private static void SerializeInternal(Stream stream, object obj, Encoding encoding)
-        {
-            var serializer = new XmlSerializer(obj.GetType());
-            var settings = new XmlWriterSettings
-            {
-                Indent = true,
-                NewLineChars = "\r\n",
-                Encoding = encoding,
-                IndentChars = "    "
-            };
-
-            using (var writer = XmlWriter.Create(stream, settings))
-            {
-                serializer.Serialize(writer, obj);
-            }
         }
 
         #endregion
