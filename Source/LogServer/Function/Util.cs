@@ -8,7 +8,6 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Web.Script.Serialization;
-using System.Windows.Forms;
 using Insight.WS.Log.Entity;
 
 namespace Insight.WS.Log
@@ -26,7 +25,7 @@ namespace Insight.WS.Log
         /// <summary>
         /// 访问验证服务用的Address
         /// </summary>
-        public static readonly string Address = GetAppSetting("VerifyServer");
+        public static string VerifyServer;
 
         /// <summary>
         /// 日志规则列表
@@ -39,19 +38,19 @@ namespace Insight.WS.Log
         public static readonly Mutex Mutex = new Mutex();
 
         /// <summary>
+        /// 程序集当前版本
+        /// </summary>
+        public static int CurrentVersion;
+
+        /// <summary>
         /// 接口最后兼容版本
         /// </summary>
-        public static readonly string CompatibleVersion = GetAppSetting("CompatibleVersion");
+        public static string CompatibleVersion;
 
         /// <summary>
         /// 接口最新版本
         /// </summary>
-        public static readonly string UpdateVersion = GetAppSetting("UpdateVersion");
-
-        /// <summary>
-        /// 程序集当前版本
-        /// </summary>
-        public static int Version;
+        public static string UpdateVersion;
 
         #endregion
 

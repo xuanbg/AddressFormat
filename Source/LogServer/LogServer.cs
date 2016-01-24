@@ -4,6 +4,7 @@ using System.ServiceModel;
 using System.ServiceProcess;
 using System.Windows.Forms;
 using Insight.WS.Base;
+using static Insight.WS.Log.Util;
 
 namespace Insight.WS.Log
 {
@@ -18,7 +19,7 @@ namespace Insight.WS.Log
         public LogServer()
         {
             InitializeComponent();
-            InitVersion();
+            InitSeting();
             DataAccess.ReadRule();
         }
 
@@ -28,8 +29,8 @@ namespace Insight.WS.Log
             var endpoints = new List<EndpointSet> { new EndpointSet { Name = "IlogService" } };
             var serv = new Services
             {
-                BaseAddress = Util.GetAppSetting("Address"),
-                Port = Util.GetAppSetting("Port"),
+                BaseAddress = GetAppSetting("Address"),
+                Port = GetAppSetting("Port"),
                 NameSpace = "Insight.WS.Log",
                 ServiceType = "LogService",
                 Endpoints = endpoints
@@ -45,13 +46,18 @@ namespace Insight.WS.Log
         }
 
         /// <summary>
-        /// 读取版本信息
+        /// 初始化环境变量
         /// </summary>
-        public static void InitVersion()
+        public static void InitSeting()
         {
             var version = new Version(Application.ProductVersion);
             var build = $"{version.Major}{version.Minor}{version.Build.ToString("D4").Substring(0, 2)}";
-            Util.Version = Convert.ToInt32(build);
+            CurrentVersion = Convert.ToInt32(build);
+            CurrentVersion = Convert.ToInt32(build);
+            CompatibleVersion = GetAppSetting("CompatibleVersion");
+            UpdateVersion = GetAppSetting("UpdateVersion");
+
+            VerifyServer = GetAppSetting("VerifyServer");
         }
 
     }
