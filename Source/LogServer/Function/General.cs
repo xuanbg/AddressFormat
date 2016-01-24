@@ -44,7 +44,7 @@ namespace Insight.WS.Log
         /// <returns>JsonResult</returns>
         public static JsonResult Authorization(string aid)
         {
-            var url = VerifyServer + "auth?action={aid}";
+            var url = VerifyServer + $"auth?action={aid}";
             var dict = GetAuthorization();
             return HttpRequest(url, "GET", dict["Auth"]);
         }
@@ -94,20 +94,12 @@ namespace Insight.WS.Log
 
             var accept = headers[HttpRequestHeader.Accept];
             var val = accept.Split(Convert.ToChar(";"));
-            var dict = new Dictionary<string, string>
+            return new Dictionary<string, string>
             {
                 {"Auth", auth},
                 {"Version", val[1].Substring(9)},
                 {"Client", val[2].Substring(8)}
             };
-
-            var type = headers[HttpRequestHeader.ContentType];
-            if (type != "application/x-gzip") return dict;
-
-            response.Headers[HttpResponseHeader.ContentEncoding] = "gzip";
-            response.ContentType = "application/x-gzip";
-
-            return dict;
         }
 
         /// <summary>
@@ -196,7 +188,7 @@ namespace Insight.WS.Log
         {
             var request = (HttpWebRequest)WebRequest.Create(url);
             request.Method = method;
-            request.Accept = $"application/x-gzip/json; version={Util.CurrentVersion}; client=5";
+            request.Accept = $"application/json; version={CurrentVersion}; client=LogServer";
             request.ContentType = "application/json";
             request.Headers.Add(HttpRequestHeader.Authorization, author);
             return request;
