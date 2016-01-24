@@ -26,7 +26,7 @@ namespace Insight.WS.Log
         protected override void OnStart(string[] args)
         {
             var path = $"{Application.StartupPath}\\LogServer.exe";
-            var endpoints = new List<EndpointSet> { new EndpointSet { Name = "IlogService" } };
+            var endpoints = new List<EndpointSet> { new EndpointSet { Name = "ILogService" } };
             var serv = new Services
             {
                 BaseAddress = GetAppSetting("Address"),

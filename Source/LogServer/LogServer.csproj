@@ -95,7 +95,7 @@
     <Compile Include="Function\DataAccess.cs" />
     <Compile Include="Entity\JsonResult.cs" />
     <Compile Include="Function\General.cs" />
-    <Compile Include="IlogService.cs" />
+    <Compile Include="ILogService.cs" />
     <Compile Include="LogService.cs" />
     <Compile Include="Entity\UserIdParse.cs" />
     <Compile Include="Function\Util.cs" />
