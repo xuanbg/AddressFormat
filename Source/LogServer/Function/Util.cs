@@ -26,7 +26,7 @@ namespace Insight.WS.Log
         /// <summary>
         /// 访问验证服务用的Address
         /// </summary>
-        public static readonly string Address = GetAppSetting("BaseServer");
+        public static readonly string Address = GetAppSetting("VerifyServer");
 
         /// <summary>
         /// 日志规则列表

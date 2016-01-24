@@ -44,7 +44,7 @@ namespace Insight.WS.Log
         /// <returns>JsonResult</returns>
         public static JsonResult Authorization(string aid)
         {
-            var url = Address + "verify/auth?action={aid}";
+            var url = Address + "auth?action={aid}";
             var dict = GetAuthorization();
             return HttpRequest(url, "GET", dict["Auth"]);
         }
