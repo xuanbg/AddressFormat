@@ -34,7 +34,7 @@ namespace Insight.WS.Log
         /// </summary>
         /// <param name="id">日志规则ID</param>
         /// <returns>JsonResult</returns>
-        [WebInvoke(Method = "DELETE", UriTemplate = "rules", ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.WrappedRequest)]
+        [WebInvoke(Method = "DELETE", UriTemplate = "rules/{id}", ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.WrappedRequest)]
         [OperationContract]
         JsonResult RemoveRule(string id);
 
@@ -52,7 +52,7 @@ namespace Insight.WS.Log
         /// </summary>
         /// <param name="id">日志规则ID</param>
         /// <returns>JsonResult</returns>
-        [WebGet(UriTemplate = "rules?id={id}", ResponseFormat = WebMessageFormat.Json)]
+        [WebGet(UriTemplate = "rules/{id}", ResponseFormat = WebMessageFormat.Json)]
         [OperationContract]
         JsonResult GetRule(string id);
 
@@ -60,7 +60,7 @@ namespace Insight.WS.Log
         /// 获取全部日志规则
         /// </summary>
         /// <returns>JsonResult</returns>
-        [WebGet(UriTemplate = "rules/allrule", ResponseFormat = WebMessageFormat.Json)]
+        [WebGet(UriTemplate = "rules", ResponseFormat = WebMessageFormat.Json)]
         [OperationContract]
         JsonResult GetRules();
 
