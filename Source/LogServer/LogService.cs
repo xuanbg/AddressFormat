@@ -11,7 +11,6 @@ namespace Insight.WS.Log
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall)]
     public class LogService : ILogService
     {
-
         /// <summary>
         /// 写入日志
         /// </summary>
@@ -20,8 +19,9 @@ namespace Insight.WS.Log
         /// <param name="source">来源（可为空）</param>
         /// <param name="action">操作（可为空）</param>
         /// <param name="userid">事件源用户ID（可为空）</param>
+        /// <param name="key">查询用的关键字段</param>
         /// <returns>JsonResult</returns>
-        public JsonResult WriteToLog(string code, string message, string source, string action, string userid)
+        public JsonResult WriteToLog(string code, string message, string source, string action, string userid, string key)
         {
             var result = Verify(code + Secret);
             if (!result.Successful) return result;
@@ -29,7 +29,7 @@ namespace Insight.WS.Log
             var gp = new UserIdParse(userid);
             if (!gp.Successful) return result.InvalidGuid();
 
-            var succe = WriteLog(code, message, source, action, gp.UserId);
+            var succe = WriteLog(code, message, source, action, gp.UserId, key);
             if (!succe.HasValue) return result.InvalidEventCode();
 
             return succe.Value ? result : result.DataBaseError();

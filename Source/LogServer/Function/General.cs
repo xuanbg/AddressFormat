@@ -124,15 +124,40 @@ namespace Insight.WS.Log
         }
 
         /// <summary>
+        /// 写入日志
+        /// </summary>
+        /// <param name="code">事件代码</param>
+        /// <param name="message">事件消息。可为空</param>
+        /// <returns>bool 是否写入成功</returns>
+        public static bool? WriteLog(string code, string message = null)
+        {
+            return WriteLog(code, message, null, null);
+        }
+
+        /// <summary>
+        /// 写入日志
+        /// </summary>
+        /// <param name="code">事件代码</param>
+        /// <param name="message">事件消息</param>
+        /// <param name="source">事件来源</param>
+        /// <param name="action">操作名称</param>
+        /// <returns>bool 是否写入成功</returns>
+        public static bool? WriteLog(string code, string message, string source, string action)
+        {
+            return WriteLog(code, message, source, action, null, null);
+        }
+
+        /// <summary>
         /// 构造SYS_Logs数据并写入
         /// </summary>
         /// <param name="code">事件代码</param>
         /// <param name="message">事件消息。可为空</param>
-        /// <param name="source">事件源。可为空，默认为空</param>
-        /// <param name="action">操作。可为空，默认为空</param>
-        /// <param name="id">用户ID。可为空，默认为空</param>
+        /// <param name="source">事件来源</param>
+        /// <param name="action">操作名称</param>
+        /// <param name="id">用户ID。可为空</param>
+        /// <param name="key">数据库查询用的关键字段</param>
         /// <returns>bool 是否写入成功</returns>
-        public static bool? WriteLog(string code, string message = null, string source = null, string action = null, Guid? id = null)
+        public static bool? WriteLog(string code, string message, string source, string action, Guid? id, string key)
         {
             if (string.IsNullOrEmpty(code) || !Regex.IsMatch(code, @"^\d{6}$")) return null;
 
@@ -148,6 +173,7 @@ namespace Insight.WS.Log
                 Source = rule?.Source ?? source,
                 Action = rule?.Action ?? action,
                 Message = string.IsNullOrEmpty(message) ? rule?.Message : message,
+                Key = key,
                 SourceUserId = id,
                 CreateTime = DateTime.Now
             };

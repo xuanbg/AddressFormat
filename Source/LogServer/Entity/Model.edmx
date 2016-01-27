@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="LogModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="LogModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="SYS_Logs">
           <Key>
             <PropertyRef Name="ID" />
@@ -16,6 +16,7 @@
           <Property Name="Source" Type="nvarchar" MaxLength="16" Nullable="false" />
           <Property Name="Action" Type="nvarchar" MaxLength="16" Nullable="false" />
           <Property Name="Message" Type="nvarchar(max)" />
+          <Property Name="Key" Type="varchar" MaxLength="64" />
           <Property Name="SourceUserId" Type="uniqueidentifier" />
           <Property Name="CreateTime" Type="datetime" Nullable="false" />
         </EntityType>
@@ -38,8 +39,7 @@
           <EntitySet Name="SYS_Logs" EntityType="Self.SYS_Logs" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SYS_Logs_Rules" EntityType="Self.SYS_Logs_Rules" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="LogModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -56,6 +56,7 @@
           <Property Name="Message" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="SourceUserId" Type="Guid" />
           <Property Name="CreateTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Key" Type="String" MaxLength="64" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="SYS_Logs_Rules">
           <Key>
@@ -85,6 +86,7 @@
           <EntitySetMapping Name="SYS_Logs">
             <EntityTypeMapping TypeName="LogModel.SYS_Logs">
               <MappingFragment StoreEntitySet="SYS_Logs">
+                <ScalarProperty Name="Key" ColumnName="Key" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="SN" ColumnName="SN" />
                 <ScalarProperty Name="Level" ColumnName="Level" />

@@ -23,5 +23,6 @@ namespace Insight.WS.Log.Entity
         public string Message { get; set; }
         public Nullable<System.Guid> SourceUserId { get; set; }
         public System.DateTime CreateTime { get; set; }
+        public string Key { get; set; }
     }
 }

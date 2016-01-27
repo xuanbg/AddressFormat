@@ -37,6 +37,7 @@ CREATE TABLE SYS_Logs(
 [Source]           NVARCHAR(16) NOT NULL,                                                                                                  --事件来源
 [Action]           NVARCHAR(16) NOT NULL,                                                                                                  --操作名称
 [Message]          NVARCHAR(MAX),                                                                                                          --日志内容
+[Key]              VARCHAR(64),                                                                                                            --操作名称
 [SourceUserId]     UNIQUEIDENTIFIER,                                                                                                       --来源用户ID
 [CreateTime]       DATETIME DEFAULT GETDATE() NOT NULL                                                                                     --创建时间
 )
