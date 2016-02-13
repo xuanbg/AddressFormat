@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ServiceModel;
 using System.ServiceProcess;
 using System.Windows.Forms;
-using Insight.WS.Base;
+using Insight.WS.Service;
 using static Insight.WS.Log.Util;
 
 namespace Insight.WS.Log
@@ -14,7 +13,7 @@ namespace Insight.WS.Log
         /// <summary>
         /// 运行中的服务主机
         /// </summary>
-        public static ServiceHost Host;
+        public static Services Services;
 
         public LogServer()
         {
@@ -25,24 +24,24 @@ namespace Insight.WS.Log
 
         protected override void OnStart(string[] args)
         {
-            var path = $"{Application.StartupPath}\\LogServer.exe";
-            var endpoints = new List<EndpointSet> { new EndpointSet { Name = "ILogService" } };
-            var serv = new Services
+            var endpoints = new List<EndpointSet> {new EndpointSet {Interface = "ILogService"}};
+            var service = new ServiceInfo
             {
                 BaseAddress = GetAppSetting("Address"),
                 Port = GetAppSetting("Port"),
+                ServiceFile = "LogServer.exe",
                 NameSpace = "Insight.WS.Log",
-                ServiceType = "LogService",
+                ComplyType = "LogService",
                 Endpoints = endpoints
             };
-            Host = serv.CreateHost(path);
-            Host.Open();
+            Services = new Services();
+            Services.CreateHost(service);
+            Services.StartService();
         }
 
         protected override void OnStop()
         {
-            Host.Abort();
-            Host.Close();
+            Services.StopService();
         }
 
         /// <summary>
