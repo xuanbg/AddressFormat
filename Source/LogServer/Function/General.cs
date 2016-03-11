@@ -32,7 +32,7 @@ namespace Insight.WS.Log
         /// <returns></returns>
         public static JsonResult Verify()
         {
-            var url = VerifyServer + "verify";
+            var url = BaseServer + "verify";
             var dict = GetAuthorization();
             return HttpRequest(url, "GET", dict["Auth"]);
         }
@@ -44,7 +44,7 @@ namespace Insight.WS.Log
         /// <returns>JsonResult</returns>
         public static JsonResult Authorization(string aid)
         {
-            var url = VerifyServer + $"auth?action={aid}";
+            var url = BaseServer + $"auth?action={aid}";
             var dict = GetAuthorization();
             return HttpRequest(url, "GET", dict["Auth"]);
         }
@@ -58,7 +58,7 @@ namespace Insight.WS.Log
         public static JsonResult Authorization(string aid, out Session session)
         {
             session = null;
-            var url = VerifyServer + $"verify/auth?action={aid}";
+            var url = BaseServer + $"verify/auth?action={aid}";
             var dict = GetAuthorization();
             var auth = dict["Auth"];
             var result = HttpRequest(url, "GET", auth);

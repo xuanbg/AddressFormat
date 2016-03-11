@@ -23,9 +23,9 @@ namespace Insight.WS.Log
         public const string Secret = "842A381C91CE43A98720825601C22A56";
 
         /// <summary>
-        /// 访问验证服务用的Address
+        /// 基础服务路径
         /// </summary>
-        public static string VerifyServer;
+        public static string BaseServer;
 
         /// <summary>
         /// 日志规则列表

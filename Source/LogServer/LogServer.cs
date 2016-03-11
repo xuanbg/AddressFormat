@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ServiceProcess;
 using System.Windows.Forms;
 using Insight.WS.Service;
@@ -24,15 +23,14 @@ namespace Insight.WS.Log
 
         protected override void OnStart(string[] args)
         {
-            var endpoints = new List<EndpointSet> {new EndpointSet {Interface = "ILogService"}};
             var service = new ServiceInfo
             {
                 BaseAddress = GetAppSetting("Address"),
                 Port = GetAppSetting("Port"),
-                ServiceFile = "LogServer.exe",
                 NameSpace = "Insight.WS.Log",
+                Interface = "ILogService",
                 ComplyType = "LogService",
-                Endpoints = endpoints
+                ServiceFile = "LogServer.exe",
             };
             Services = new Services();
             Services.CreateHost(service);
@@ -56,7 +54,7 @@ namespace Insight.WS.Log
             CompatibleVersion = GetAppSetting("CompatibleVersion");
             UpdateVersion = GetAppSetting("UpdateVersion");
 
-            VerifyServer = GetAppSetting("VerifyServer");
+            BaseServer = GetAppSetting("BaseServer");
         }
 
     }
