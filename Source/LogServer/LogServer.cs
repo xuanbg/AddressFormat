@@ -1,6 +1,7 @@
 ﻿using System.ServiceProcess;
 using Insight.WS.Log.Entity;
-using static Insight.WS.Log.Util;
+using Insight.WS.Log.Utils;
+using static Insight.WS.Log.Utils.Util;
 
 namespace Insight.WS.Log
 {

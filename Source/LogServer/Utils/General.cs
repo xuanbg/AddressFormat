@@ -6,9 +6,8 @@ using System.ServiceModel.Web;
 using System.Text;
 using System.Text.RegularExpressions;
 using Insight.WS.Log.Entity;
-using static Insight.WS.Log.Util;
 
-namespace Insight.WS.Log
+namespace Insight.WS.Log.Utils
 {
     public class General
     {
@@ -22,7 +21,7 @@ namespace Insight.WS.Log
             var result = new JsonResult();
             var auth = GetAuthorization();
             var key = GetAuthor<string>(auth);
-            return key != Hash(rule) ? result.InvalidAuth() : result.Success();
+            return key != Util.Hash(rule) ? result.InvalidAuth() : result.Success();
         }
 
         /// <summary>
@@ -31,7 +30,7 @@ namespace Insight.WS.Log
         /// <returns></returns>
         public static JsonResult Verify()
         {
-            var url = BaseServer + "verify";
+            var url = Util.BaseServer + "verify";
             var auth = GetAuthorization();
             return HttpRequest(url, "GET", auth);
         }
@@ -43,7 +42,7 @@ namespace Insight.WS.Log
         /// <returns>JsonResult</returns>
         public static JsonResult Authorization(string aid)
         {
-            var url = BaseServer + $"verify/auth?action={aid}";
+            var url = Util.BaseServer + $"verify/auth?action={aid}";
             var auth = GetAuthorization();
             return HttpRequest(url, "GET", auth);
         }
@@ -57,7 +56,7 @@ namespace Insight.WS.Log
         public static JsonResult Authorization(string aid, out Session session)
         {
             session = null;
-            var url = BaseServer + $"verify/auth?action={aid}";
+            var url = Util.BaseServer + $"verify/auth?action={aid}";
             var auth = GetAuthorization();
             var result = HttpRequest(url, "GET", auth);
             if (!result.Successful) return result;
@@ -96,7 +95,7 @@ namespace Insight.WS.Log
             {
                 var buffer = Convert.FromBase64String(auth);
                 var json = Encoding.UTF8.GetString(buffer);
-                return Deserialize<T>(json);
+                return Util.Deserialize<T>(json);
             }
             catch (Exception ex)
             {
@@ -144,7 +143,7 @@ namespace Insight.WS.Log
             if (string.IsNullOrEmpty(code) || !Regex.IsMatch(code, @"^\d{6}$")) return null;
 
             var level = Convert.ToInt32(code.Substring(0, 1));
-            var rule = Rules.SingleOrDefault(r => r.Code == code);
+            var rule = Util.Rules.SingleOrDefault(r => r.Code == code);
             if (level > 1 && level < 7 && rule == null) return null;
 
             var log = new SYS_Logs
@@ -219,7 +218,7 @@ namespace Insight.WS.Log
                 {
                     var result = reader.ReadToEnd();
                     responseStream.Close();
-                    return Deserialize<JsonResult>(result);
+                    return Util.Deserialize<JsonResult>(result);
                 }
             }
             catch (Exception ex)

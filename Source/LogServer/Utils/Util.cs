@@ -10,7 +10,7 @@ using System.Threading;
 using System.Web.Script.Serialization;
 using Insight.WS.Log.Entity;
 
-namespace Insight.WS.Log
+namespace Insight.WS.Log.Utils
 {
     public static class Util
     {

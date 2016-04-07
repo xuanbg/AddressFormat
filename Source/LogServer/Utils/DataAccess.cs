@@ -3,9 +3,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Insight.WS.Log.Entity;
-using static Insight.WS.Log.Util;
 
-namespace Insight.WS.Log
+namespace Insight.WS.Log.Utils
 {
     public class DataAccess
     {
@@ -17,7 +16,7 @@ namespace Insight.WS.Log
         {
             using (var context = new LogEntities())
             {
-                Rules = context.SYS_Logs_Rules.ToList();
+                Util.Rules = context.SYS_Logs_Rules.ToList();
             }
         }
 
@@ -34,7 +33,7 @@ namespace Insight.WS.Log
                     General.WriteLog("300601");
                     return false;
                 }
-                Rules.Add(rule);
+                Util.Rules.Add(rule);
                 return true;
             }
         }
@@ -56,7 +55,7 @@ namespace Insight.WS.Log
                     return false;
                 }
 
-                Rules.RemoveAll(r => r.ID == id);
+                Util.Rules.RemoveAll(r => r.ID == id);
                 return true;
             }
         }
@@ -84,8 +83,8 @@ namespace Insight.WS.Log
                 }
             }
 
-            Rules.RemoveAll(r => r.ID == rule.ID);
-            Rules.Add(rule);
+            Util.Rules.RemoveAll(r => r.ID == rule.ID);
+            Util.Rules.Add(rule);
             return true;
         }
 
@@ -110,8 +109,8 @@ namespace Insight.WS.Log
         /// <returns>bool 是否写入成功</returns>
         public static bool WriteToFile(SYS_Logs log)
         {
-            Mutex.WaitOne();
-            var path = $"{GetAppSetting("LogLocal")}\\{GetLevelName(log.Level)}\\";
+            Util.Mutex.WaitOne();
+            var path = $"{Util.GetAppSetting("LogLocal")}\\{GetLevelName(log.Level)}\\";
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
@@ -127,12 +126,12 @@ namespace Insight.WS.Log
                 {
                     stream.Write(buffer, 0, buffer.Length);
                 }
-                Mutex.ReleaseMutex();
+                Util.Mutex.ReleaseMutex();
                 return true;
             }
             catch (Exception)
             {
-                Mutex.ReleaseMutex();
+                Util.Mutex.ReleaseMutex();
                 return false;
             }
         }

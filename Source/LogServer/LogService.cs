@@ -3,8 +3,9 @@ using System.Linq;
 using System.ServiceModel;
 using System.Text.RegularExpressions;
 using Insight.WS.Log.Entity;
-using static Insight.WS.Log.General;
-using static Insight.WS.Log.Util;
+using Insight.WS.Log.Utils;
+using static Insight.WS.Log.Utils.General;
+using static Insight.WS.Log.Utils.Util;
 
 namespace Insight.WS.Log
 {
