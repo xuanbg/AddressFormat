@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -21,8 +20,8 @@ namespace Insight.WS.Log
         public static JsonResult Verify(string rule)
         {
             var result = new JsonResult();
-            var dict = GetAuthorization();
-            var key = GetAuthor<string>(dict["Auth"]);
+            var auth = GetAuthorization();
+            var key = GetAuthor<string>(auth);
             return key != Hash(rule) ? result.InvalidAuth() : result.Success();
         }
 
@@ -33,8 +32,8 @@ namespace Insight.WS.Log
         public static JsonResult Verify()
         {
             var url = BaseServer + "verify";
-            var dict = GetAuthorization();
-            return HttpRequest(url, "GET", dict["Auth"]);
+            var auth = GetAuthorization();
+            return HttpRequest(url, "GET", auth);
         }
 
         /// <summary>
@@ -44,9 +43,9 @@ namespace Insight.WS.Log
         /// <returns>JsonResult</returns>
         public static JsonResult Authorization(string aid)
         {
-            var url = BaseServer + $"auth?action={aid}";
-            var dict = GetAuthorization();
-            return HttpRequest(url, "GET", dict["Auth"]);
+            var url = BaseServer + $"verify/auth?action={aid}";
+            var auth = GetAuthorization();
+            return HttpRequest(url, "GET", auth);
         }
 
         /// <summary>
@@ -59,8 +58,7 @@ namespace Insight.WS.Log
         {
             session = null;
             var url = BaseServer + $"verify/auth?action={aid}";
-            var dict = GetAuthorization();
-            var auth = dict["Auth"];
+            var auth = GetAuthorization();
             var result = HttpRequest(url, "GET", auth);
             if (!result.Successful) return result;
 
@@ -72,34 +70,18 @@ namespace Insight.WS.Log
         /// 获取Http请求头部承载的验证信息
         /// </summary>
         /// <returns>string Http请求头部承载的验证字符串</returns>
-        public static Dictionary<string, string> GetAuthorization()
+        public static string GetAuthorization()
         {
             var context = WebOperationContext.Current;
             if (context == null) return null;
 
             var headers = context.IncomingRequest.Headers;
             var response = context.OutgoingResponse;
-            if (!CompareVersion(headers))
-            {
-                response.StatusCode = HttpStatusCode.NotAcceptable;
-                return null;
-            }
-
             var auth = headers[HttpRequestHeader.Authorization];
-            if (string.IsNullOrEmpty(auth))
-            {
-                response.StatusCode = HttpStatusCode.Unauthorized;
-                return null;
-            }
+            if (!string.IsNullOrEmpty(auth)) return auth;
 
-            var accept = headers[HttpRequestHeader.Accept];
-            var val = accept.Split(Convert.ToChar(";"));
-            return new Dictionary<string, string>
-            {
-                {"Auth", auth},
-                {"Version", val[1].Substring(9)},
-                {"Client", val[2].Substring(8)}
-            };
+            response.StatusCode = HttpStatusCode.Unauthorized;
+            return null;
         }
 
         /// <summary>
@@ -214,7 +196,7 @@ namespace Insight.WS.Log
         {
             var request = (HttpWebRequest)WebRequest.Create(url);
             request.Method = method;
-            request.Accept = $"application/json; version={CurrentVersion}; client=LogServer";
+            request.Accept = "application/json; client=LogServer";
             request.ContentType = "application/json";
             request.Headers.Add(HttpRequestHeader.Authorization, author);
             return request;
@@ -245,23 +227,6 @@ namespace Insight.WS.Log
                 WriteLog("100601", $"Http请求未得到正确的响应。\r\nException:{ex}", "日志服务", "接口验证");
                 return new JsonResult().BadRequest();
             }
-        }
-
-        /// <summary>
-        /// 验证版本是否兼容
-        /// </summary>
-        /// <param name="headers"></param>
-        /// <returns></returns>
-        private static bool CompareVersion(WebHeaderCollection headers)
-        {
-            var accept = headers[HttpRequestHeader.Accept];
-            if (accept == null) return false;
-
-            var val = accept.Split(Convert.ToChar(";"));
-            if (accept.Length < 3) return false;
-
-            var ver = Convert.ToInt32(val[1].Substring(9));
-            return ver >= Convert.ToInt32(CompatibleVersion) && ver <= Convert.ToInt32(UpdateVersion);
         }
 
     }

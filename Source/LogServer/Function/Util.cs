@@ -37,21 +37,6 @@ namespace Insight.WS.Log
         /// </summary>
         public static readonly Mutex Mutex = new Mutex();
 
-        /// <summary>
-        /// 程序集当前版本
-        /// </summary>
-        public static int CurrentVersion;
-
-        /// <summary>
-        /// 接口最后兼容版本
-        /// </summary>
-        public static string CompatibleVersion;
-
-        /// <summary>
-        /// 接口最新版本
-        /// </summary>
-        public static string UpdateVersion;
-
         #endregion
 
         #region 常用方法

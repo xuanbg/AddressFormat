@@ -1,7 +1,5 @@
-﻿using System;
-using System.ServiceProcess;
-using System.Windows.Forms;
-using Insight.WS.Service;
+﻿using System.ServiceProcess;
+using Insight.WS.Log.Entity;
 using static Insight.WS.Log.Util;
 
 namespace Insight.WS.Log
@@ -23,6 +21,7 @@ namespace Insight.WS.Log
 
         protected override void OnStart(string[] args)
         {
+            var ver = GetAppSetting("Version");
             var service = new ServiceInfo
             {
                 BaseAddress = GetAppSetting("Address"),
@@ -33,7 +32,7 @@ namespace Insight.WS.Log
                 ServiceFile = "LogServer.exe",
             };
             Services = new Services();
-            Services.CreateHost(service);
+            Services.CreateHost(service, ver);
             Services.StartService();
         }
 
@@ -47,13 +46,6 @@ namespace Insight.WS.Log
         /// </summary>
         public static void InitSeting()
         {
-            var version = new Version(Application.ProductVersion);
-            var build = $"{version.Major}{version.Minor}{version.Build.ToString("D4").Substring(0, 2)}";
-            CurrentVersion = Convert.ToInt32(build);
-            CurrentVersion = Convert.ToInt32(build);
-            CompatibleVersion = GetAppSetting("CompatibleVersion");
-            UpdateVersion = GetAppSetting("UpdateVersion");
-
             BaseServer = GetAppSetting("BaseServer");
         }
 
