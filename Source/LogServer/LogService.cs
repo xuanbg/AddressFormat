@@ -4,7 +4,6 @@ using System.ServiceModel;
 using System.Text.RegularExpressions;
 using Insight.WS.Log.Entity;
 using Insight.WS.Log.Utils;
-using static Insight.WS.Log.Utils.General;
 using static Insight.WS.Log.Utils.Util;
 
 namespace Insight.WS.Log
@@ -19,18 +18,20 @@ namespace Insight.WS.Log
         /// <param name="message">事件消息，为空则使用默认消息文本</param>
         /// <param name="source">来源（可为空）</param>
         /// <param name="action">操作（可为空）</param>
-        /// <param name="userid">事件源用户ID（可为空）</param>
         /// <param name="key">查询用的关键字段</param>
+        /// <param name="userid">事件源用户ID（可为空）</param>
         /// <returns>JsonResult</returns>
-        public JsonResult WriteToLog(string code, string message, string source, string action, string userid, string key)
+        public JsonResult WriteToLog(string code, string message, string source, string action, string key, string userid)
         {
-            var result = Verify(code + Secret);
+            var verify = new Verify(code + Secret);
+            var result = verify.Result;
             if (!result.Successful) return result;
 
             var gp = new UserIdParse(userid);
             if (!gp.Successful) return result.InvalidGuid();
 
-            var succe = WriteLog(code, message, source, action, gp.UserId, key);
+            var log = new Logger(code, message, source, action, key, gp.UserId);
+            var succe = log.Write();
             if (!succe.HasValue) return result.InvalidEventCode();
 
             return succe.Value ? result : result.DataBaseError();
@@ -43,8 +44,8 @@ namespace Insight.WS.Log
         /// <returns>JsonResult</returns>
         public JsonResult AddRule(SYS_Logs_Rules rule)
         {
-            Session us;
-            var result = Authorization("60A97A33-0E6E-4856-BB2B-322FEEEFD96A", out us);
+            var verify = new Verify(Guid.Parse("60A97A33-0E6E-4856-BB2B-322FEEEFD96A"));
+            var result = verify.Result;
             if (!result.Successful) return result;
 
             if (string.IsNullOrEmpty(rule.Code) || !Regex.IsMatch(rule.Code, @"^\d{6}$")) return result.InvalidEventCode();
@@ -54,15 +55,17 @@ namespace Insight.WS.Log
 
             if (Rules.Any(r => r.Code == rule.Code)) return result.EventCodeUsed();
 
-            rule.CreatorUserId = us.UserId;
+            var uid = verify.Session.UserId;
+            rule.CreatorUserId = uid;
             if (!DataAccess.AddRule(rule)) return result.DataBaseError();
 
             var log = new
             {
-                UserID = us.UserId,
-                Message = $"事件代码【{rule.Code}】已由{us.UserName}创建和配置为：{Serialize(rule)}"
+                UserID = uid,
+                Message = $"事件代码【{rule.Code}】已由{verify.Session.UserName}创建和配置为：{Serialize(rule)}"
             };
-            WriteLog("600601", Serialize(log));
+            var logger = new Logger("600601", Serialize(log));
+            logger.Write();
             return result;
         }
 
@@ -73,8 +76,8 @@ namespace Insight.WS.Log
         /// <returns>JsonResult</returns>
         public JsonResult RemoveRule(string id)
         {
-            Session us;
-            var result = Authorization("BBC43098-A030-46CA-A681-0C3D1ECC15AB", out us);
+            var verify = new Verify(Guid.Parse("BBC43098-A030-46CA-A681-0C3D1ECC15AB"));
+            var result = verify.Result;
             if (!result.Successful) return result;
 
             Guid rid;
@@ -84,10 +87,11 @@ namespace Insight.WS.Log
 
             var log = new
             {
-                UserID = us.UserId,
-                Message = $"事件配置【{id}】已被{us.UserName}删除"
+                UserID = verify.Session.UserId,
+                Message = $"事件配置【{id}】已被{verify.Session.UserName}删除"
             };
-            WriteLog("600602", Serialize(log));
+            var logger = new Logger("600602", Serialize(log));
+            logger.Write();
             return result;
         }
 
@@ -98,18 +102,19 @@ namespace Insight.WS.Log
         /// <returns>JsonResult</returns>
         public JsonResult EditRule(SYS_Logs_Rules rule)
         {
-            Session us;
-            var result = Authorization("9FF1547D-2E3F-4552-963F-5EA790D586EA", out us);
+            var verify = new Verify(Guid.Parse("9FF1547D-2E3F-4552-963F-5EA790D586EA"));
+            var result = verify.Result;
             if (!result.Successful) return result;
 
             if (!DataAccess.EditRule(rule)) return result.DataBaseError();
 
             var log = new
             {
-                UserID = us.UserId,
-                Message = $"事件代码【{rule.Code}】已被{us.UserName}修改为：{Serialize(rule)}"
+                UserID = verify.Session.UserId,
+                Message = $"事件代码【{rule.Code}】已被{verify.Session.UserName}修改为：{Serialize(rule)}"
             };
-            WriteLog("600603", Serialize(log));
+            var logger = new Logger("600603", Serialize(log));
+            logger.Write();
             return result;
         }
 
@@ -120,7 +125,8 @@ namespace Insight.WS.Log
         /// <returns>JsonResult</returns>
         public JsonResult GetRule(string id)
         {
-            var result = Authorization("E3CFC5AA-CD7D-4A3C-8900-8132ADB7099F");
+            var verify = new Verify(Guid.Parse("E3CFC5AA-CD7D-4A3C-8900-8132ADB7099F"));
+            var result = verify.Result;
             if (!result.Successful) return result;
 
             Guid rid;
@@ -136,7 +142,8 @@ namespace Insight.WS.Log
         /// <returns>JsonResult</returns>
         public JsonResult GetRules()
         {
-            var result = Authorization("E3CFC5AA-CD7D-4A3C-8900-8132ADB7099F");
+            var verify = new Verify(Guid.Parse("E3CFC5AA-CD7D-4A3C-8900-8132ADB7099F"));
+            var result = verify.Result;
             if (!result.Successful) return result;
 
             return Rules.Count == 0 ? result.NoContent() : result.Success(Serialize(Rules));

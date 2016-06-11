@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Configuration;
-using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -63,19 +60,6 @@ namespace Insight.WS.Log.Utils
             return s.Aggregate("", (current, c) => current + c.ToString("X2"));
         }
 
-        /// <summary>
-        /// 生成用于接口验证的Authorization字符串
-        /// </summary>
-        /// <typeparam name="T">输入类型</typeparam>
-        /// <param name="obj">用于接口验证的数据对象</param>
-        /// <returns>string 用于接口验证的Authorization字符串</returns>
-        public static string Base64<T>(T obj)
-        {
-            var json = Serialize(obj);
-            var buff = Encoding.UTF8.GetBytes(json);
-            return Convert.ToBase64String(buff);
-        }
-
         #endregion
 
         #region Serialize/Deserialize
@@ -100,45 +84,6 @@ namespace Insight.WS.Log.Utils
         public static T Deserialize<T>(string json)
         {
             return new JavaScriptSerializer().Deserialize<T>(json);
-        }
-
-        #endregion
-
-        #region Compress/Decompress
-
-        /// <summary>
-        /// GZip压缩
-        /// </summary>
-        /// <param name="data"></param>
-        /// <returns></returns>
-        public static byte[] Compress(byte[] data)
-        {
-            var ms = new MemoryStream();
-            var stream = new GZipStream(ms, CompressionMode.Compress, true);
-            stream.Write(data, 0, data.Length);
-            stream.Close();
-            return ms.ToArray();
-        }
-
-        /// <summary>
-        /// ZIP解压
-        /// </summary>
-        /// <param name="dada"></param>
-        /// <returns></returns>
-        public static byte[] Decompress(byte[] dada)
-        {
-            var ms = new MemoryStream(dada);
-            var stream = new GZipStream(ms, CompressionMode.Decompress);
-            var buffer = new MemoryStream();
-            var block = new byte[1024];
-            while (true)
-            {
-                var read = stream.Read(block, 0, block.Length);
-                if (read <= 0) break;
-                buffer.Write(block, 0, read);
-            }
-            stream.Close();
-            return buffer.ToArray();
         }
 
         #endregion

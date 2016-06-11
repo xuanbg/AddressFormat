@@ -89,10 +89,11 @@
     </Compile>
     <Compile Include="Utils\DataAccess.cs" />
     <Compile Include="Entity\JsonResult.cs" />
-    <Compile Include="Utils\General.cs" />
+    <Compile Include="Entity\Logger.cs" />
     <Compile Include="ILogService.cs" />
     <Compile Include="LogService.cs" />
     <Compile Include="Entity\UserIdParse.cs" />
+    <Compile Include="Utils\HttpRequest.cs" />
     <Compile Include="Utils\Util.cs" />
     <Compile Include="LogServer.cs">
       <SubType>Component</SubType>
@@ -109,6 +110,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services.cs" />
+    <Compile Include="Utils\Verify.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

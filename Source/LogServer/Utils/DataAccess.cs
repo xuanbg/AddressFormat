@@ -30,7 +30,8 @@ namespace Insight.WS.Log.Utils
                 context.SYS_Logs_Rules.Add(rule);
                 if (context.SaveChanges() <= 0)
                 {
-                    General.WriteLog("300601");
+                    var log = new Logger("300601");
+                    log.Write();
                     return false;
                 }
                 Util.Rules.Add(rule);
@@ -51,7 +52,8 @@ namespace Insight.WS.Log.Utils
                 context.SYS_Logs_Rules.Remove(rule);
                 if (context.SaveChanges() <= 0)
                 {
-                    General.WriteLog("300602");
+                    var log = new Logger("300602");
+                    log.Write();
                     return false;
                 }
 
@@ -78,7 +80,8 @@ namespace Insight.WS.Log.Utils
                 data.Message = rule.Message;
                 if (context.SaveChanges() <= 0)
                 {
-                    General.WriteLog("300603");
+                    var log = new Logger("300603");
+                    log.Write();
                     return false;
                 }
             }

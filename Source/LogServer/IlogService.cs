@@ -14,12 +14,12 @@ namespace Insight.WS.Log
         /// <param name="message">事件消息，为空则使用默认消息文本</param>
         /// <param name="source">来源（可为空）</param>
         /// <param name="action">操作（可为空）</param>
+        /// <param name="key">查询用的关键字段</param>
         /// <param name="userid">事件源用户ID（可为空）</param>
-        /// <param name="key"></param>
         /// <returns>JsonResult</returns>
         [WebInvoke(Method = "POST", UriTemplate = "logs", ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.WrappedRequest)]
         [OperationContract]
-        JsonResult WriteToLog(string code, string message, string source, string action, string userid, string key);
+        JsonResult WriteToLog(string code, string message, string source, string action, string key, string userid);
 
         /// <summary>
         /// 新增日志规则
