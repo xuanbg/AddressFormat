@@ -1,9 +1,8 @@
 ﻿using System.ComponentModel;
-using System.ServiceModel;
 
-namespace Insight.WS.Log
+namespace Insight.WS.Utils
 {
-    partial class LogServer
+    partial class Server
     {
         /// <summary> 
         /// 必需的设计器变量。
@@ -32,7 +31,7 @@ namespace Insight.WS.Log
         private void InitializeComponent()
         {
             components = new Container();
-            this.ServiceName = "Insight Log Service";
+            this.ServiceName = "Insight Address Format Service";
         }
 
         #endregion

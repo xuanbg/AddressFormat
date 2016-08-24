@@ -7,22 +7,19 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Insight.WS.Log.Entity
+namespace Insight.WS.Utils.Entity
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class SYS_Logs
+    public partial class Region
     {
         public System.Guid ID { get; set; }
         public long SN { get; set; }
-        public int Level { get; set; }
+        public Nullable<System.Guid> ParentId { get; set; }
+        public int Grade { get; set; }
         public string Code { get; set; }
-        public string Source { get; set; }
-        public string Action { get; set; }
-        public string Message { get; set; }
-        public Nullable<System.Guid> SourceUserId { get; set; }
-        public System.DateTime CreateTime { get; set; }
-        public string Key { get; set; }
+        public string Name { get; set; }
+        public string Alias { get; set; }
     }
 }

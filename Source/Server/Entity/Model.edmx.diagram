@@ -4,9 +4,8 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="2fc388e82c5c4ab496e759ad6d3f98a7" Name="Diagram1">
-        <EntityTypeShape EntityType="LogModel.SYS_Logs" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="LogModel.SYS_Logs_Rules" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
+      <Diagram DiagramId="41fad4c64f834814a7f9d94e3da8b210" Name="Diagram1">
+        <EntityTypeShape EntityType="Model.Region" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

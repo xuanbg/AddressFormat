@@ -1,6 +1,6 @@
 ﻿using System.ServiceProcess;
 
-namespace Insight.WS.Log
+namespace Insight.WS.Utils
 {
     static class Program
     {
@@ -9,11 +9,11 @@ namespace Insight.WS.Log
         /// </summary>
         static void Main()
         {
-            var ServicesToRun = new ServiceBase[]
+            var service = new ServiceBase[]
             {
-                new LogServer()
+                new Server()
             };
-            ServiceBase.Run(ServicesToRun);
+            ServiceBase.Run(service);
         }
     }
 }

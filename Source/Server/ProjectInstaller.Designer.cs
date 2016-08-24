@@ -1,4 +1,4 @@
-﻿namespace Insight.WS.Log
+﻿namespace Insight.WS.Utils
 {
     partial class ProjectInstaller
     {
@@ -39,9 +39,9 @@
             // 
             // serviceInstaller
             // 
-            this.serviceInstaller.Description = "Insight 日志服务";
-            this.serviceInstaller.DisplayName = "Insight 日志服务";
-            this.serviceInstaller.ServiceName = "Insight Log Service";
+            this.serviceInstaller.Description = "Insight 地址清洗服务";
+            this.serviceInstaller.DisplayName = "Insight 地址清洗服务";
+            this.serviceInstaller.ServiceName = "Insight Address Format Service";
             this.serviceInstaller.StartType = System.ServiceProcess.ServiceStartMode.Automatic;
             // 
             // ProjectInstaller

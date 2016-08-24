@@ -7,16 +7,16 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Insight.WS.Log.Entity
+namespace Insight.WS.Utils.Entity
 {
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class LogEntities : DbContext
+    public partial class Entities : DbContext
     {
-        public LogEntities()
-            : base("name=LogEntities")
+        public Entities()
+            : base("name=Entities")
         {
         }
     
@@ -25,7 +25,6 @@ namespace Insight.WS.Log.Entity
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<SYS_Logs> SYS_Logs { get; set; }
-        public virtual DbSet<SYS_Logs_Rules> SYS_Logs_Rules { get; set; }
+        public virtual DbSet<Region> Region { get; set; }
     }
 }
