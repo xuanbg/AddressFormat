@@ -1,6 +1,5 @@
 ﻿using System.ServiceModel;
 using System.ServiceModel.Web;
-using Insight.Utils.Entity;
 using Insight.WS.Utils.Entity;
 
 namespace Insight.WS.Utils
