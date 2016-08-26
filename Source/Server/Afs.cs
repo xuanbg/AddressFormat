@@ -18,8 +18,11 @@ namespace Insight.WS.Utils
             var result = Util.Copy<JsonResult>(verify.Result);
             if (!result.Successful) return result;
 
-            result.BadRequest();
-            if (string.IsNullOrEmpty(address)) return result;
+            if (string.IsNullOrEmpty(address))
+            {
+                result.BadRequest();
+                return result;
+            }
 
             var region = new RegionFormat().Format(address);
             if (region == null) result.IdentifyingAddressFailed();

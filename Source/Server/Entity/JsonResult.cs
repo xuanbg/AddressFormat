@@ -7,23 +7,16 @@ namespace Insight.WS.Utils.Entity
     /// </summary>
     public class JsonResult:Result
     {
-
-        #region 接口返回信息
-
         /// <summary>
-        /// 返回事件代码错误（413）的错误信息
+        /// 地址识别失败（413）
         /// </summary>
         /// <returns>JsonResult</returns>
-        public JsonResult IdentifyingAddressFailed()
+        public void IdentifyingAddressFailed()
         {
             Successful = false;
             Code = "413";
             Name = "IdentifyingAddressFailed";
             Message = "地址识别失败";
-            return this;
         }
-
-        #endregion
-
     }
 }
