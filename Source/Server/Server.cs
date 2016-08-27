@@ -4,7 +4,7 @@ using System.ServiceProcess;
 using Insight.WCF;
 using Insight.WCF.Entity;
 using Insight.WS.Utils.Entity;
-using static Insight.Utils.Util;
+using static Insight.Utils.Common.Util;
 
 namespace Insight.WS.Utils
 {
