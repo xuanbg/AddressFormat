@@ -41,18 +41,19 @@ namespace Insight.WS.Utils
         /// <param name="args"></param>
         protected override void OnStart(string[] args)
         {
-            var ver = GetAppSetting("Version");
             var service = new ServiceInfo
             {
                 BaseAddress = GetAppSetting("Address"),
                 Port = GetAppSetting("Port"),
+                Path = "openapi",
+                Version = GetAppSetting("Version"),
                 NameSpace = "Insight.WS.Utils",
                 Interface = "IAfs",
                 ComplyType = "Afs",
                 ServiceFile = "Server.exe",
             };
             Services = new Services();
-            Services.CreateHost(service, ver);
+            Services.CreateHost(service);
             Services.StartService();
         }
 

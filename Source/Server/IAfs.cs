@@ -12,7 +12,7 @@ namespace Insight.WS.Utils
         /// </summary>
         /// <param name="address">地址</param>
         /// <returns>JsonResult</returns>
-        [WebGet(UriTemplate = "openapi/regions/{address}", ResponseFormat = WebMessageFormat.Json)]
+        [WebGet(UriTemplate = "regions/{address}", ResponseFormat = WebMessageFormat.Json)]
         [OperationContract]
         JsonResult GetRegion(string address);
     }
