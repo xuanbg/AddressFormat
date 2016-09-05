@@ -15,6 +15,9 @@ namespace Insight.WS.Utils
         /// </summary>
         public static string BaseServer;
 
+
+        public static string VerifyInterface;
+
         /// <summary>
         /// 运行中的服务主机
         /// </summary>
@@ -29,6 +32,7 @@ namespace Insight.WS.Utils
         {
             InitializeComponent();
             BaseServer = GetAppSetting("BaseServer");
+            VerifyInterface = GetAppSetting("VerifyInterface");
             using (var context = new Entities())
             {
                 Regions = context.Region.Where(r => r.Grade < 4).ToList();

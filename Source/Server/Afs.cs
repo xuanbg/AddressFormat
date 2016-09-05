@@ -15,7 +15,7 @@ namespace Insight.WS.Utils
         /// <returns>JsonResult</returns>
         public JsonResult GetRegion(string address)
         {
-            var verifyurl = $"{Server.BaseServer}:6200/verifyapi/v1.0/verify";
+            var verifyurl = $"{Server.BaseServer}{Server.VerifyInterface}";
             var verify = new Verify(verifyurl, 60, true);
             var result = Util.Copy<JsonResult>(verify.Result);
             if (!result.Successful) return result;
