@@ -1,41 +1,30 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.ServiceProcess;
 using Insight.WCF;
 using Insight.WCF.Entity;
 using Insight.WS.Utils.Entity;
 using static Insight.Utils.Common.Util;
+using static Insight.WS.Utils.Utils.Parms;
 
 namespace Insight.WS.Utils
 {
     public partial class Server : ServiceBase
     {
         /// <summary>
-        /// 基础服务地址
-        /// </summary>
-        public static string BaseServer;
-
-
-        public static string VerifyInterface;
-
-        /// <summary>
         /// 运行中的服务主机
         /// </summary>
-        public static Services Services;
-
-        /// <summary>
-        /// 行政区划表缓存
-        /// </summary>
-        public static List<Region> Regions;
+        private static Services _Services;
 
         public Server()
         {
             InitializeComponent();
             BaseServer = GetAppSetting("BaseServer");
-            VerifyInterface = GetAppSetting("VerifyInterface");
             using (var context = new Entities())
             {
-                Regions = context.Region.Where(r => r.Grade < 4).ToList();
+                Provinces = context.Region.Where(r => r.Grade == 0).ToList();
+                Citys = context.Region.Where(r => r.Grade == 1).ToList();
+                Countys = context.Region.Where(r => r.Grade == 2).ToList();
+                Towns = context.Region.Where(r => r.Grade == 3).ToList();
             }
         }
 
@@ -56,9 +45,9 @@ namespace Insight.WS.Utils
                 ComplyType = "Afs",
                 ServiceFile = "Server.exe",
             };
-            Services = new Services();
-            Services.CreateHost(service);
-            Services.StartService();
+            _Services = new Services();
+            _Services.CreateHost(service);
+            _Services.StartService();
         }
 
         /// <summary>
@@ -66,7 +55,7 @@ namespace Insight.WS.Utils
         /// </summary>
         protected override void OnStop()
         {
-            Services.StopService();
+            _Services.StopService();
         }
     }
 }

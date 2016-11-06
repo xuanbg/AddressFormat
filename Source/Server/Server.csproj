@@ -60,7 +60,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Entity\Address.cs" />
-    <Compile Include="Entity\JsonResult.cs" />
     <Compile Include="Entity\Model.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -81,7 +80,8 @@
     </Compile>
     <Compile Include="IAfs.cs" />
     <Compile Include="Afs.cs" />
-    <Compile Include="RegionFormat.cs" />
+    <Compile Include="Utils\Parms.cs" />
+    <Compile Include="Utils\RegionFormat.cs" />
     <Compile Include="Server.cs">
       <SubType>Component</SubType>
     </Compile>

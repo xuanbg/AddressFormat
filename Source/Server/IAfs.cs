@@ -1,6 +1,6 @@
 ﻿using System.ServiceModel;
 using System.ServiceModel.Web;
-using Insight.WS.Utils.Entity;
+using Insight.Utils.Entity;
 
 namespace Insight.WS.Utils
 {
@@ -14,6 +14,6 @@ namespace Insight.WS.Utils
         /// <returns>JsonResult</returns>
         [WebGet(UriTemplate = "regions/{address}", ResponseFormat = WebMessageFormat.Json)]
         [OperationContract]
-        JsonResult GetRegion(string address);
+        Result GetRegion(string address);
     }
 }

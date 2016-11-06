@@ -1,7 +1,7 @@
 ﻿using System.ServiceModel;
-using Insight.Utils.Common;
+using Insight.Utils.Entity;
 using Insight.Utils.Server;
-using Insight.WS.Utils.Entity;
+using Insight.WS.Utils.Utils;
 
 namespace Insight.WS.Utils
 {
@@ -13,11 +13,11 @@ namespace Insight.WS.Utils
         /// </summary>
         /// <param name="address">地址</param>
         /// <returns>JsonResult</returns>
-        public JsonResult GetRegion(string address)
+        public Result GetRegion(string address)
         {
-            var verifyurl = $"{Server.BaseServer}{Server.VerifyInterface}";
-            var verify = new Verify(verifyurl, 60, true);
-            var result = Util.Copy<JsonResult>(verify.Result);
+            var url = $"{Parms.BaseServer}/security/v1.0/tokens/verify";
+            var verify = new Verify(url, 60, true);
+            var result = verify.Result;
             if (!result.Successful) return result;
 
             if (string.IsNullOrEmpty(address))
@@ -27,8 +27,7 @@ namespace Insight.WS.Utils
             }
 
             var region = new RegionFormat().Format(address);
-            if (region == null) result.IdentifyingAddressFailed();
-            else result.Success(region);
+            result.Success(region);
 
             return result;
         }
