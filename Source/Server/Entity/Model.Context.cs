@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Insight.WS.Utils.Entity
+namespace Insight.Utils.AddressFormat.Entity
 {
     using System;
     using System.Data.Entity;

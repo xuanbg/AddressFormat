@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace Insight.WS.Utils
+namespace Insight.Utils.AddressFormat
 {
     [RunInstaller(true)]
     public partial class ProjectInstaller : System.Configuration.Install.Installer

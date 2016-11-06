@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using Insight.WS.Utils.Entity;
+using Insight.Utils.AddressFormat.Entity;
 
-namespace Insight.WS.Utils.Utils
+namespace Insight.Utils.AddressFormat.Services
 {
     public class Parms
     {

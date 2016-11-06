@@ -1,9 +1,8 @@
 ﻿using System.ServiceModel;
 using Insight.Utils.Entity;
 using Insight.Utils.Server;
-using Insight.WS.Utils.Utils;
 
-namespace Insight.WS.Utils
+namespace Insight.Utils.AddressFormat.Services
 {
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall)]
     public class Afs : IAfs

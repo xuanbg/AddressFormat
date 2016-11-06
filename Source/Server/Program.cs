@@ -1,6 +1,6 @@
 ﻿using System.ServiceProcess;
 
-namespace Insight.WS.Utils
+namespace Insight.Utils.AddressFormat
 {
     static class Program
     {

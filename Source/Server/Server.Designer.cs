@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace Insight.WS.Utils
+namespace Insight.Utils.AddressFormat
 {
     partial class Server
     {

@@ -7,7 +7,7 @@
     <ProjectGuid>{C8EE59AD-2499-4C28-A4CF-7C726210D94D}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Insight.WS.Utils</RootNamespace>
+    <RootNamespace>Insight.Utils.AddressFormat</RootNamespace>
     <AssemblyName>Server</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -32,15 +32,6 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Develop|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\..\..\Insight_WS\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
@@ -78,10 +69,10 @@
     <Compile Include="Entity\Region.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
-    <Compile Include="IAfs.cs" />
-    <Compile Include="Afs.cs" />
-    <Compile Include="Utils\Parms.cs" />
-    <Compile Include="Utils\RegionFormat.cs" />
+    <Compile Include="Services\IAfs.cs" />
+    <Compile Include="Services\Afs.cs" />
+    <Compile Include="Services\Parms.cs" />
+    <Compile Include="Services\RegionFormat.cs" />
     <Compile Include="Server.cs">
       <SubType>Component</SubType>
     </Compile>

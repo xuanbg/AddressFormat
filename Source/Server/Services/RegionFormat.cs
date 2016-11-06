@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Insight.Utils.AddressFormat.Entity;
 using Insight.WS.Utils.Entity;
-using static Insight.WS.Utils.Utils.Parms;
 
-namespace Insight.WS.Utils.Utils
+namespace Insight.Utils.AddressFormat.Services
 {
     public class RegionFormat
     {
@@ -62,7 +62,7 @@ namespace Insight.WS.Utils.Utils
         /// <returns>bool 是否找到省级区划</returns>
         private void FindProvinc()
         {
-            var list = (from p in Provinces
+            var list = (from p in Parms.Provinces
                 let index = GetIndex(p.Alias, 5)
                 where index >= 0
                 orderby index
@@ -71,7 +71,7 @@ namespace Insight.WS.Utils.Utils
 
             var prov = list.First();
             _Province = prov.region;
-            _Citys = Citys.Where(c => c.ParentId == _Province.ID).ToList();
+            _Citys = Parms.Citys.Where(c => c.ParentId == _Province.ID).ToList();
             SetIndex(prov.index, _Province.Name, _Province.Alias);
         }
 
@@ -91,7 +91,7 @@ namespace Insight.WS.Utils.Utils
 
             var city = list.First();
             _City = city.region;
-            _Countys = Countys.Where(c => c.ParentId == _City.ID).ToList();
+            _Countys = Parms.Countys.Where(c => c.ParentId == _City.ID).ToList();
             SetIndex(city.index, _City.Name, city.key);
         }
 
@@ -111,7 +111,7 @@ namespace Insight.WS.Utils.Utils
 
             var county = list.First();
             _County = county.region;
-            _Towns = Towns.Where(t => t.ParentId == _County.ID).ToList();
+            _Towns = Parms.Towns.Where(t => t.ParentId == _County.ID).ToList();
             SetIndex(county.index, _County.Name, county.key);
         }
 
@@ -139,7 +139,7 @@ namespace Insight.WS.Utils.Utils
         /// </summary>
         private void FindProvinceReverse()
         {
-            var list = (from c in Citys
+            var list = (from c in Parms.Citys
                 let alias = c.Alias.Split(',').FirstOrDefault(_Address.Contains)
                 let key = alias ?? c.Name
                 let index = GetIndex(key)
@@ -150,9 +150,9 @@ namespace Insight.WS.Utils.Utils
 
             var city = list.First();
             _City = city.region;
-            _Countys = Countys.Where(c => c.ParentId == _City.ID).ToList();
-            _Province = Provinces.Single(p => p.ID == _City.ParentId);
-            _Citys = Citys.Where(c => c.ParentId == _Province.ID).ToList();
+            _Countys = Parms.Countys.Where(c => c.ParentId == _City.ID).ToList();
+            _Province = Parms.Provinces.Single(p => p.ID == _City.ParentId);
+            _Citys = Parms.Citys.Where(c => c.ParentId == _Province.ID).ToList();
             SetIndex(city.index, _City.Name, city.key);
         }
 
@@ -162,7 +162,7 @@ namespace Insight.WS.Utils.Utils
         private void FindCityReverse()
         {
             var list = (from r in _Citys
-                join c in Countys on r.ID equals c.ParentId
+                join c in Parms.Countys on r.ID equals c.ParentId
                 let alias = c.Alias.Split(',').FirstOrDefault(_Address.Contains)
                 let key = alias ?? c.Name
                 let index = GetIndex(key)
@@ -173,9 +173,9 @@ namespace Insight.WS.Utils.Utils
 
             var county = list.First();
             _County = county.region;
-            _Towns = Towns.Where(t => t.ParentId == _County.ID).ToList();
-            _City = Citys.Single(c => c.ID == _County.ParentId);
-            _Countys = Countys.Where(c => c.ParentId == _City.ID).ToList();
+            _Towns = Parms.Towns.Where(t => t.ParentId == _County.ID).ToList();
+            _City = Parms.Citys.Single(c => c.ID == _County.ParentId);
+            _Countys = Parms.Countys.Where(c => c.ParentId == _City.ID).ToList();
             SetIndex(county.index, _County.Name, county.key);
         }
 
@@ -185,7 +185,7 @@ namespace Insight.WS.Utils.Utils
         private void FindCountyReverse()
         {
             var list = (from c in _Countys
-                join t in Towns on c.ID equals t.ParentId
+                join t in Parms.Towns on c.ID equals t.ParentId
                 let alias = t.Alias.Split(',').FirstOrDefault(_Address.Contains)
                 let key = alias ?? t.Name
                 let index = GetIndex(key)
@@ -197,7 +197,7 @@ namespace Insight.WS.Utils.Utils
             var town = list.First();
             _Town = town.region;
             _Index = town.index;
-            _County = Countys.Single(c => c.ID == town.region.ParentId);
+            _County = Parms.Countys.Single(c => c.ID == town.region.ParentId);
         }
 
         /// <summary>
@@ -206,7 +206,7 @@ namespace Insight.WS.Utils.Utils
         /// <returns>Address 结构化地址数据</returns>
         private Address ReverseFromCounty()
         {
-            var list = (from c in Countys
+            var list = (from c in Parms.Countys
                 let alias = c.Alias.Split(',').FirstOrDefault(_Address.Contains)
                 let key = alias ?? c.Name
                 let index = GetIndex(key)
@@ -220,14 +220,14 @@ namespace Insight.WS.Utils.Utils
             {
                 var county = list.First();
                 _County = county.region;
-                _Towns = Towns.Where(t => t.ParentId == _County.ID).ToList();
+                _Towns = Parms.Towns.Where(t => t.ParentId == _County.ID).ToList();
                 SetIndex(county.index, _County.Name, county.key);
                 FindTown();
             }
             else
             {
                 var towns = (from c in list
-                    join t in Towns on c.region.ID equals t.ParentId
+                    join t in Parms.Towns on c.region.ID equals t.ParentId
                     let alias = t.Alias.Split(',').FirstOrDefault(_Address.Contains)
                     let key = alias ?? t.Name
                     let index = GetIndex(key)
@@ -242,11 +242,11 @@ namespace Insight.WS.Utils.Utils
                 var town = towns.First();
                 _Town = town.region;
                 _Index = town.index;
-                _County = Countys.Single(c => c.ID == town.region.ParentId);
+                _County = Parms.Countys.Single(c => c.ID == town.region.ParentId);
             }
 
-            _City = Citys.Single(c => c.ID == _County.ParentId);
-            _Province = Provinces.Single(p => p.ID == _City.ParentId);
+            _City = Parms.Citys.Single(c => c.ID == _County.ParentId);
+            _Province = Parms.Provinces.Single(p => p.ID == _City.ParentId);
             return SetRegion();
         }
 
@@ -257,8 +257,8 @@ namespace Insight.WS.Utils.Utils
         private Address ReverseFromTown()
         {
             var list = (from c in _Citys
-                join x in Countys on c.ID equals x.ParentId
-                join t in Towns on x.ID equals t.ParentId
+                join x in Parms.Countys on c.ID equals x.ParentId
+                join t in Parms.Towns on x.ID equals t.ParentId
                 let alias = t.Alias.Split(',').FirstOrDefault(_Address.Contains)
                 let key = alias ?? t.Name
                 let index = GetIndex(key)
@@ -273,15 +273,15 @@ namespace Insight.WS.Utils.Utils
                     var town = list.First();
                     _Town = town.region;
                     _Index = town.index;
-                    _County = Countys.Single(c => c.ID == town.region.ParentId);
-                    _City = Citys.Single(c => c.ID == _County.ParentId);
+                    _County = Parms.Countys.Single(c => c.ID == town.region.ParentId);
+                    _City = Parms.Citys.Single(c => c.ID == _County.ParentId);
                     return SetRegion();
                 }
             }
 
             if ("北京,天津,上海,重庆".Contains(_Province.Alias))
             {
-                _City = Citys.Single(c => c.ParentId == _Province.ID && c.Name == "市辖区");
+                _City = Parms.Citys.Single(c => c.ParentId == _Province.ID && c.Name == "市辖区");
             }
             return SetRegion();
         }

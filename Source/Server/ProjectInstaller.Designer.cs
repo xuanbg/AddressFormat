@@ -1,4 +1,4 @@
-﻿namespace Insight.WS.Utils
+﻿namespace Insight.Utils.AddressFormat
 {
     partial class ProjectInstaller
     {

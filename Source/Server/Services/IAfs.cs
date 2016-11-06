@@ -2,7 +2,7 @@
 using System.ServiceModel.Web;
 using Insight.Utils.Entity;
 
-namespace Insight.WS.Utils
+namespace Insight.Utils.AddressFormat.Services
 {
     [ServiceContract]
     interface IAfs
